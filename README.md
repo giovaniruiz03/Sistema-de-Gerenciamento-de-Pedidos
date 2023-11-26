@@ -3,26 +3,33 @@
 Tarefa com o objetivo da criação de um sistema de gerenciamento de pedidos para uma loja, utilizando dos recursos de: stored procedures, triggers, views e JOINs no MySQL Workbench.
 
 ## Etapa 1: Criação de Tabelas e Inserção de Dados
-![image](https://github.com/giovaniruiz03/Sistema-de-Gerenciamento-de-Pedidos/assets/145368122/3255c296-0b86-4d06-9ccb-19f4304e9c25)
+![image](https://github.com/giovaniruiz03/Sistema-de-Gerenciamento-de-Pedidos/assets/145368122/450fccaa-709c-43d7-9b27-6035505e81b3)
 
-SELECT * FROM Clientes;
-![image](https://github.com/giovaniruiz03/Sistema-de-Gerenciamento-de-Pedidos/assets/145368122/fd732ce6-6056-499b-91a0-d985f743f81c)
+## SELECT * FROM Clientes;
+![image](https://github.com/giovaniruiz03/Sistema-de-Gerenciamento-de-Pedidos/assets/145368122/2e5489b1-882a-4953-89f7-fdc85c0a0ceb)
 
-SELECT * FROM Pedidos;
+## SELECT * FROM Pedidos;
 ![image](https://github.com/giovaniruiz03/Sistema-de-Gerenciamento-de-Pedidos/assets/145368122/bfddf05f-d8b0-4b20-8ce9-799bfe5fa7da)
 
-
 ## Etapa 2: Criação de Stored Procedure
-![image](https://github.com/giovaniruiz03/Sistema-de-Gerenciamento-de-Pedidos/assets/145368122/2be5f609-7897-4dc9-a2a9-e6ace4ac9895)
+![image](https://github.com/giovaniruiz03/Sistema-de-Gerenciamento-de-Pedidos/assets/145368122/df2f26e7-84d7-4c54-a70f-920280236c54)
 
 ## Etapa 3: Trigger
-![image](https://github.com/giovaniruiz03/Sistema-de-Gerenciamento-de-Pedidos/assets/145368122/1773f545-9ab6-47e2-aa5e-b5e978b03dc1)
+![image](https://github.com/giovaniruiz03/Sistema-de-Gerenciamento-de-Pedidos/assets/145368122/405631da-96bf-4a79-9f1e-5ec3305b8e01)
 
 ## Etapa 4: View
-![image](https://github.com/giovaniruiz03/Sistema-de-Gerenciamento-de-Pedidos/assets/145368122/5f74e9d7-6d5d-42a4-9f1c-d55968108dcd)
+![image](https://github.com/giovaniruiz03/Sistema-de-Gerenciamento-de-Pedidos/assets/145368122/ed682c8f-b5c7-4af4-8621-f72d6cd0f064)
 
 ## Etapa 5: Consulta com JOIN
-![image](https://github.com/giovaniruiz03/Sistema-de-Gerenciamento-de-Pedidos/assets/145368122/58031284-3ba0-47ee-9e91-ab3b8e7409fa)
+![image](https://github.com/giovaniruiz03/Sistema-de-Gerenciamento-de-Pedidos/assets/145368122/2007197f-5d22-443d-8d2d-9408e4a3c4c8)
+
+## View PedidosClientes - Antes de adicionar um novo pedido
+![image](https://github.com/giovaniruiz03/Sistema-de-Gerenciamento-de-Pedidos/assets/145368122/305563d1-6ebb-4f61-9185-a76989213f19)
+
+## View PedidosClientes - Depois de adicionar um novo pedido
+## CALL InserirPedido(1, '2023-11-07', 50.75);
+![image](https://github.com/giovaniruiz03/Sistema-de-Gerenciamento-de-Pedidos/assets/145368122/43e77e6f-a66e-4a9d-b570-c213bbf0cf7d)
+
 
 
 
