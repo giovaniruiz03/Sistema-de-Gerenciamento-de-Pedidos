@@ -1,0 +1,80 @@
+CREATE TABLE Clientes (
+    id_cliente INT PRIMARY KEY,
+    nome VARCHAR(80),
+    endereco VARCHAR(100),
+    telefone VARCHAR(20),
+    TotalPedidos DECIMAL(10, 2)
+);
+
+CREATE TABLE Pedidos (
+    id_pedido INT PRIMARY KEY,
+    id_cliente INT,
+    data_pedido DATE,
+    valor_total DECIMAL(10, 2),
+    FOREIGN KEY (id_cliente) REFERENCES Clientes(id_cliente)
+);
+
+INSERT INTO Clientes (id_cliente, nome, endereco, telefone, TotalPedidos) VALUES
+    (1, 'Giovani', 'Rua A, 123', '(11) 1234-5678', 0.00),
+    (2, 'Fabio', 'Av. B, 456', '(11) 2345-6789', 0.00),
+    (3, 'João', 'Rua C, 789', '(11) 3456-7890', 0.00);
+
+INSERT INTO Pedidos (id_pedido, id_cliente, data_pedido, valor_total) VALUES
+    (1, 1, '2023-11-01', 50.00),
+    (2, 2, '2023-11-02', 75.50),
+    (3, 3, '2023-11-03', 120.25);
+
+DELIMITER $$
+
+CREATE TRIGGER AtualizarTotalPedidos
+AFTER INSERT ON Pedidos
+FOR EACH ROW
+BEGIN
+    UPDATE Clientes
+    SET TotalPedidos = TotalPedidos + NEW.valor_total
+    WHERE id_cliente = NEW.id_cliente;
+END $$
+
+CREATE PROCEDURE InserirPedido(
+  IN id_cliente INT,
+  IN data_pedido DATE,
+  IN valor_total DECIMAL(10, 2)
+) 
+BEGIN
+  DECLARE novo_id_pedido INT;
+  
+  START TRANSACTION;
+
+  SELECT COALESCE(MAX(id_pedido) + 1, 1) INTO novo_id_pedido FROM Pedidos;
+
+  INSERT INTO Pedidos (id_pedido, id_cliente, data_pedido, valor_total) VALUES (novo_id_pedido, id_cliente, data_pedido, valor_total);
+
+  CALL AtualizarTotalPedidos(id_cliente);
+
+  COMMIT;
+
+  SELECT novo_id_pedido AS id_pedido;
+END $$
+
+DELIMITER ;
+
+CREATE VIEW PedidosClientes AS
+SELECT
+    Pedidos.id_pedido,
+    Clientes.nome AS nome_cliente,
+    Pedidos.data_pedido,
+    Pedidos.valor_total
+FROM Pedidos
+JOIN Clientes ON Pedidos.id_cliente = Clientes.id_cliente;
+
+SELECT pc.id_pedido,
+       pc.nome_cliente,
+       pc.data_pedido,
+       pc.valor_total
+  FROM PedidosClientes pc;
+
+-- Adicionar um novo pedido
+CALL InserirPedido(1, '2023-11-07', 50.75);
+
+SELECT * FROM Pedidos;
+SELECT * FROM Clientes;
