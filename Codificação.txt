@@ -1,82 +1,67 @@
-CREATE TABLE tb_aluno (
-  id_aluno INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  nome_aluno VARCHAR(50) NOT NULL,
-  sobrenome VARCHAR(60) NOT NULL,
-  email VARCHAR(120) NOT NULL,
-  matriculado BIT NOT NULL DEFAULT 0
+CREATE TABLE Clientes (
+id_cliente INT PRIMARY KEY, nome VARCHAR(80),
+endereco VARCHAR(100),
+telefone VARCHAR(20),
+TotalPedidos DECIMAL(18, 2)
 );
 
-CREATE TABLE tb_curso (
-  id_curso INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  nome_curso VARCHAR(80) NOT NULL,
-  area_curso VARCHAR(60) NOT NULL
+CREATE TABLE Pedidos (
+id_pedido INT PRIMARY KEY,
+id_cliente INT,
+data_pedido DATE,
+valor total DECIMAL(18, 2),
+FOREIGN KEY (id_cliente) REFERENCES Clientes (id_cliente)
 );
 
-CREATE TABLE tb_aluno_curso (
-  id_aluno INT NOT NULL,
-  id_curso INT NOT NULL,
-  PRIMARY KEY (id_aluno, id_curso),
-  FOREIGN KEY (id_aluno) REFERENCES tb_aluno (id_aluno),
-  FOREIGN KEY (id_curso) REFERENCES tb_curso (id_curso)
-);
+INSERT INTO Clientes (id_cliente, nome, endereco, telefone, TotalPedidos) VALUES
+(1, 'Giovani', 'Rua A, 123', '(11) 1234-5678', 0.00),
+(2, 'Fabio', 'Av. B, 456', '(11) 2345-6789', 0.00),
+(3, 'João', 'Rua C, 789', '(11) 3456-7890', 0.00);
 
-DELIMITER $$
+INSERT INTO Pedidos (id_pedido, id_cliente, data_pedido, valor_total) VALUES
+(1, 1, '2023-11-01', 50.00),
+(2, 2, 2023-11-02', 75.50),
+(3, 3, 2023-11-03', 120.25);
 
-CREATE TRIGGER aluno_email_trigger
-BEFORE INSERT ON tb_aluno
+﻿
+CREATE PROCEDURE InserirPedido(
+IN id_cliente INT,
+IN data_pedido DATE,
+IN valor total DECIMAL(10, 2)
+)
+BEGIN
+DECLARE novo_id_pedido INT;
+START TRANSACTION;
+SELECT COALESCE(MAX(id_pedido) + 1, 1) INTO novo_id_pedido FROM Pedidos;
+INSERT INTO Pedidos (id_pedido, id_cliente, data_pedido, valor total) VALUES (novo_id_pedido, id_cliente, data_pedido, valor_total);
+CALL AtualizarTotalPedidos (id_cliente);
+COMMIT;
+
+SELECT novo_id_pedido AS id_pedido;
+
+END $$
+
+CREATE TRIGGER AtualizarTotalPedidos
+AFTER INSERT ON Pedidos
 FOR EACH ROW
 BEGIN
-  SET NEW.email = CONCAT(NEW.nome_aluno, '.', NEW.sobrenome, '@facens.br');
+
+UPDATE Clientes
+SET TotalPedidos = Total Pedidos + NEW.valor_total WHERE id_cliente = NEW.id_cliente;
 END $$
 
-DELIMITER ;
+CREATE VIEW PedidosClientes AS
+SELECT
+FROM Pedidos
+Pedidos.id_pedido,
+Clientes.nome AS nome_cliente,
+Pedidos.data_pedido,
+Pedidos.valor_total
+JOIN Clientes ON Pedidos.id_cliente = Clientes.id_cliente;
 
-DELIMITER $$
+SELECT pc.id_pedido,
+       pc.nome_cliente,
+       pc.data_pedido,
+       pc.valor total
+FROM PedidosClientes pc;
 
-CREATE PROCEDURE inserir_curso (
-  IN nome_curso VARCHAR(80),
-  IN area_curso VARCHAR(60)
-)
-BEGIN
-  INSERT INTO tb_curso (nome_curso, area_curso) VALUES (nome_curso, area_curso);
-END $$
-
-DELIMITER $$
-
-CREATE FUNCTION obter_curso_por_nome (
-  nome_curso_aux VARCHAR(80)
-)
-RETURNS INT
-BEGIN
-  RETURN (
-    SELECT id_curso
-    FROM tb_curso
-    WHERE nome_curso = nome_curso_aux
-  );
-END $$
-
-DELIMITER ;
-
-DELIMITER $$
-
-CREATE PROCEDURE matricular_aluno (
-  IN id_aluno INT,
-  IN id_curso INT
-)
-BEGIN
-  -- Verifica se o aluno já está matriculado no curso
-  IF (
-    SELECT COUNT(*)
-    FROM tb_aluno_curso
-    WHERE id_aluno = id_aluno
-    AND id_curso = id_curso
-  ) > 0 THEN
-    -- O aluno já está matriculado no curso
-    BEGIN
-    END;
-  ELSE
-    INSERT INTO tb_aluno_curso (id_aluno, id_curso) VALUES (id_aluno, id_curso);
-  END IF;
-END $$
-
-DELIMITER ;
